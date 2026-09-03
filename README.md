@@ -39,13 +39,60 @@ outputs/         - checkpoints, metrics, sample prediction images (gitignored)
 ## Status
 
 - [x] Phase 1: Data loading + visualization
-- [ ] Phase 2: Baseline training run
-- [ ] Phase 3: Evaluation (mAP@0.5, precision/recall, failure case review)
+- [x] Phase 2: Baseline training run
+- [x] Phase 3: Evaluation (precision/recall, failure case review)
 - [ ] Phase 4: Writeup + polish
 
 ## Results
 
-_TBD — filled in after Phase 3._
+Baseline: Faster R-CNN (ResNet-50 FPN backbone, COCO-pretrained), fine-tuned
+10 epochs on SSDD, batch size 4, SGD lr=0.005. Trained on a Colab T4 GPU
+(~2 min/epoch).
+
+Evaluated on a held-out 15% val split (174 images), IoU >= 0.5, score >= 0.5:
+
+| Metric | Value |
+|---|---|
+| Precision | 0.986 |
+| Recall | 0.986 |
+| TP / FP / FN | 420 / 6 / 6 |
+
+Sample predictions (red = predicted box + confidence, green = ground truth):
+
+<p align="center">
+  <img src="assets/sample_0.png" width="45%" alt="Sample prediction 1">
+  <img src="assets/sample_3.png" width="45%" alt="Sample prediction 2">
+</p>
+
+### Limitations / honest caveats
+
+- **Train/val split wasn't fixed-seed for this checkpoint.** `train.py`
+  originally split the dataset with an unseeded `random_split`, so this
+  checkpoint's actual training run doesn't have a reproducible record of
+  which 174 images were held out. I added a fixed seed (`torch.Generator()
+  .manual_seed(42)`) to both `train.py` and `evaluate.py` after the fact so
+  the *evaluation* script's val split is deterministic and reproducible --
+  but for this specific checkpoint, that split may not be perfectly disjoint
+  from what the model actually trained on, since the original run used a
+  different (unseeded) split. Retraining with the current code would produce
+  a checkpoint with a verifiably clean held-out set.
+- **Small dataset, single class.** SSDD is ~1,160 chips, one class (ship),
+  mostly clean single-ship-per-image scenes. High precision/recall here
+  doesn't say much about performance on harder cases -- dense harbor scenes,
+  small/faint targets, or land clutter false positives -- since SSDD is
+  curated to already exclude a lot of that difficulty.
+- **No hyperparameter tuning.** This is a first-pass baseline (default LR,
+  no LR schedule, no augmentation). Numbers are a starting point, not a
+  ceiling.
+
+### Next steps if continuing this project
+
+- Retrain with the fixed seed for a verifiably clean val split
+- Add data augmentation (flips, rotations -- SAR imagery has no canonical
+  "up") and see if it helps generalization
+- Try a harder/larger dataset (e.g. xView) or SSDD's inshore-only subset,
+  which is known to be more difficult than the full set
+- Add a proper mAP@[0.5:0.95] metric instead of single-threshold precision/recall
 
 ## Setup
 

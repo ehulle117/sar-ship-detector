@@ -31,7 +31,10 @@ def train(data_root: str, epochs: int, batch_size: int, lr: float, output_dir: s
     dataset = SSDDDataset(data_root, transforms=to_tensor_transform)
     val_size = int(0.15 * len(dataset))
     train_size = len(dataset) - val_size
-    train_set, val_set = random_split(dataset, [train_size, val_size])
+    # Fixed seed so evaluate.py can reproduce this exact split and score
+    # only on the held-out val set, instead of re-scoring training images.
+    split_generator = torch.Generator().manual_seed(42)
+    train_set, val_set = random_split(dataset, [train_size, val_size], generator=split_generator)
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
