@@ -1,5 +1,7 @@
 # SAR Ship Detector
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ehulle117/sar-ship-detector/blob/main/notebooks/02_train_colab.ipynb)
+
 Fine-tuning a Faster R-CNN object detector (PyTorch/torchvision) to detect ships
 in synthetic aperture radar (SAR) imagery, using the SSDD (SAR Ship Detection
 Dataset).
