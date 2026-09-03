@@ -36,7 +36,7 @@ outputs/         - checkpoints, metrics, sample prediction images (gitignored)
 
 ## Status
 
-- [ ] Phase 1: Data loading + visualization
+- [x] Phase 1: Data loading + visualization
 - [ ] Phase 2: Baseline training run
 - [ ] Phase 3: Evaluation (mAP@0.5, precision/recall, failure case review)
 - [ ] Phase 4: Writeup + polish
