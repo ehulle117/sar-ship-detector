@@ -28,7 +28,7 @@ src/
   dataset.py     - PyTorch Dataset for loading SSDD images + boxes
   model.py       - model construction (pretrained Faster R-CNN, 1-class head)
   train.py       - training loop
-  evaluate.py    - mAP / precision / recall evaluation
+  evaluate.py    - IoU-matched precision / recall evaluation
   visualize.py   - draw predicted vs ground-truth boxes on sample images
 notebooks/
   01_explore_data.ipynb   - sanity-check dataset and visualize labels
@@ -41,7 +41,7 @@ outputs/         - checkpoints, metrics, sample prediction images (gitignored)
 - [x] Phase 1: Data loading + visualization
 - [x] Phase 2: Baseline training run
 - [x] Phase 3: Evaluation (precision/recall, failure case review)
-- [ ] Phase 4: Writeup + polish
+- [x] Phase 4: Writeup + polish
 
 ## Results
 
@@ -103,3 +103,9 @@ pip install -r requirements.txt
 ```
 
 Designed to run on Google Colab's free GPU tier if you don't have local CUDA.
+On Apple Silicon, note that `train.py`/`evaluate.py`/`visualize.py`
+deliberately don't use MPS: torchvision's Faster R-CNN ops (ROI Align in
+particular) are unstable on Apple's MPS backend as of PyTorch 2.8 -- loss
+diverges and Metal throws command-buffer errors. They fall back to CPU there,
+which is correct but slow (~5-6 hrs for a full 10-epoch run on an M1 Pro);
+Colab is the faster path.

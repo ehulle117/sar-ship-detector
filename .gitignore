@@ -1,7 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
-data/
-outputs/
+data/*
+!data/README.md
+outputs/*
+!outputs/.gitkeep
 .ipynb_checkpoints/
 .DS_Store
