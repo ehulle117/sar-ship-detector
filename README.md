@@ -1,7 +1,5 @@
 # SAR Ship Detector
 
-Fine-tuning Faster R-CNN (PyTorch) to detect ships in SAR imagery, using the SSDD dataset — object detection on synthetic aperture radar.
-
 Fine-tuning a Faster R-CNN object detector (PyTorch/torchvision) to detect ships
 in synthetic aperture radar (SAR) imagery, using the SSDD (SAR Ship Detection
 Dataset).
