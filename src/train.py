@@ -1,6 +1,7 @@
 """Baseline training loop: fine-tune Faster R-CNN on SSDD."""
 
 import argparse
+import os
 
 import torch
 from torch.utils.data import DataLoader, random_split
@@ -19,8 +20,13 @@ def to_tensor_transform(image, target):
 
 
 def train(data_root: str, epochs: int, batch_size: int, lr: float, output_dir: str):
+    # MPS is intentionally not used here: torchvision's Faster R-CNN ops
+    # (ROI Align in particular) are unstable on Apple's MPS backend as of
+    # PyTorch 2.8 -- loss diverges and Metal throws command-buffer errors.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
+
+    os.makedirs(output_dir, exist_ok=True)
 
     dataset = SSDDDataset(data_root, transforms=to_tensor_transform)
     val_size = int(0.15 * len(dataset))

@@ -14,6 +14,7 @@ from train import to_tensor_transform
 
 @torch.no_grad()
 def visualize_samples(data_root: str, checkpoint: str, output_dir: str, num_samples: int = 6, score_threshold: float = 0.5):
+    # MPS skipped -- see note in train.py.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     dataset = SSDDDataset(data_root, transforms=to_tensor_transform)

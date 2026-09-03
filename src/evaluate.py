@@ -17,6 +17,7 @@ def box_iou_matrix(boxes1: torch.Tensor, boxes2: torch.Tensor) -> torch.Tensor:
 
 @torch.no_grad()
 def evaluate(data_root: str, checkpoint: str, iou_threshold: float = 0.5, score_threshold: float = 0.5):
+    # MPS skipped -- see note in train.py.
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     dataset = SSDDDataset(data_root, transforms=to_tensor_transform)
